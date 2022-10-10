@@ -1,0 +1,24 @@
+p, label {
+    color: black;
+    font-family:sans-serif;
+    font-style:italic;
+    font-weight: 400;
+    font-size: 24px;
+    line-height: 24px;
+
+}
+
+input[type=number] {
+    padding: 12px 20px;
+    margin: 8px 8px;
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 20px;
+   
+  }
+
+input[type=button] {
+    padding: 12px 20px;
+    margin: 8px 8px;
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 20px;
+}

@@ -1,0 +1,104 @@
+<!--
+    Kertolaskupeli
+-->
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="tyylit.css">
+        <title>Kertolaskupeli</title>
+    </head>
+    <body onload="alusta();pelaa(0);">
+        <div id="lasku"></div>
+
+        <form>
+            <label for="luku" id="ohje">Anna vastaus lukuna väliltä 1-100</label>
+            <input type="number" id="luku" name="luku" value="1" min="1" max="100">
+            <input type="button" value="Tarkista" id="tarkistus" name="tarkistus" onclick="pelaa(document.getElementById('luku').value);">
+        </form>
+
+        <div id="tulos"></div>
+
+        <div id="kokmaara"></div>
+        <div id="oikmaara"></div>
+        
+        <form onchange="sailytys(document.getElementById('kylla').checked);">
+            <p>Säilytetäänkö laskujen kokonaismäärä ja oikeiden vastausten määrä?</p>
+            <label for="ei">Ei</label>
+            <input type="radio" id="ei" name="tallennus" value="Ei">
+
+            <label for="kylla">Kyllä</label>
+            <input type="radio" id="kylla" name="tallennus" value="Kyllä">
+        </form>
+
+        <script>
+            "use strict";
+            let tulos = 0;
+            let kokonaismaara = 0;
+            let oikeatVastaukset = 0;
+
+            function paivitaTilastot() {
+                document.getElementById("kokmaara").innerHTML = "<p>" + "Laskujen kokonaismäärä: " + String(kokonaismaara) + " kpl" + "</p>";
+                document.getElementById("oikmaara").innerHTML = "<p>" + "Oikeita vastauksia: " + String(oikeatVastaukset) + " kpl" + "</p>";
+            }
+
+            function pelaa(luku) {
+                // Tarkista käyttäjän vastaus ja laske uusi lasku.
+                if (luku < 1  || luku > 100) {
+                    document.getElementById("ohje").innerHTML = "<p>" + "Anna vastaus lukuna väliltä 1-100" + "</p>";
+                    document.getElementById("tulos").innerHTML = "<p></p>";
+                } else {
+                    if (luku != tulos) {
+                        document.getElementById("tulos").innerHTML = "<p>" + "Väärin. Uusi laskutehtävä on yllä." + "</p>";
+                    } else {
+                        document.getElementById("tulos").innerHTML = "<p>" + "Oikein! Uusi laskutehtävä on yllä." + "</p>";
+                        oikeatVastaukset += 1;
+                    }
+                    // Kasvatetaan kokonaismäärää jos syöte on hyväksyttävä.
+                    kokonaismaara += 1;
+                }
+                let uusiKertoja = Math.floor(Math.random() * 10) + 1;
+                let uusiKerrottava = Math.floor(Math.random() * 10) + 1;
+                tulos = uusiKerrottava * uusiKertoja;
+                document.getElementById("lasku").innerHTML = "<p>" + String(uusiKertoja) + " * " + String(uusiKerrottava) + "</p>";
+
+                // Päivitä div elementit.
+                paivitaTilastot();
+                // Kutsu säilytystä, jotta uusimmat arvot tallennetaan jos käyttäjän valinta on kyllä.
+                sailytys(document.getElementById('kylla').checked);
+            }
+
+            function alusta() {
+                // alusta laskujen ja oikeuden vastausten määrä hakemalla local storagesta
+                let kokAlustus = localStorage.getItem("kokmaara");
+                let oikAlustus = localStorage.getItem("oikmaara");
+                
+                if (kokAlustus != null && oikAlustus != null) {
+                    kokonaismaara = parseInt(kokAlustus);
+                    oikeatVastaukset = parseInt(oikAlustus);
+                    paivitaTilastot();
+                    document.getElementById("kylla").checked = true; 
+                } else {
+                    document.getElementById("ei").checked = true
+                }
+            }
+
+            function sailytys(valinta){
+                // Jos käyttäjä valitsee kyllä tallennetaan local storageen, muuten poistetaan arvot sieltä.
+
+                if (valinta) {
+                    localStorage.setItem("kokmaara", String(kokonaismaara));
+                    localStorage.setItem("oikmaara", String(oikeatVastaukset));
+                } else {
+                    if (localStorage.getItem("kokmaara") != null) {
+                        localStorage.removeItem("kokmaara");
+                    }
+                    if (localStorage.getItem("oikmaara") != null) {
+                        localStorage.removeItem("oikmaara");
+                    }
+                    
+                } 
+            }
+
+        </script>    
+    </body>
+</html>
